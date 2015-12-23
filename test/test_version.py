@@ -22,14 +22,17 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from optparse import OptionParser
+"""Test if version will be displayed correctly."""
+
+from _common import unittest
+
+from subprocess import check_call
 
 
-parser = OptionParser(version="easydms version 0.0.0")
+class TestVersion(unittest.TestCase):
+    def setUp(self):
+        super(TestVersion, self).setUp()
 
-
-def main():
-    (options, args) = parser.parse_args()
-
-if __name__ == '__main__':
-    main()
+    def test_print_version_and_exit(self):
+        """Check if easydms can be called and exits zero"""
+        check_call(["easydms", "--version"])
