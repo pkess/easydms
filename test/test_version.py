@@ -27,11 +27,20 @@
 from _common import unittest
 
 from subprocess import check_call
+import sys
+import easydms.cli
 
 
 class TestVersion(unittest.TestCase):
     def setUp(self):
         super(TestVersion, self).setUp()
+
+    def test_print_version(self):
+        """Check if easydms prints version string"""
+        sys.argv = [sys.argv[0], "--version"]
+        with self.assertRaises(SystemExit) as cm:
+            easydms.cli.main()
+        self.assertEqual(cm.exception.code, 0)
 
     def test_print_version_and_exit(self):
         """Check if easydms can be called and exits zero"""
