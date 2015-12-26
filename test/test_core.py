@@ -30,6 +30,7 @@ from _common import unittest
 import tempfile
 import os
 import shutil
+from subprocess import call
 
 import easydms.config
 
@@ -44,7 +45,16 @@ class TestConfig(unittest.TestCase):
             tempdir = tempfile.mkdtemp()
             filename = os.path.join(tempdir, "Config.yaml")
             with self.assertRaises(easydms.config.ErrorNoConfiguration):
-                config = easydms.config.Config(filename)
-                assert config
+                easydms.config.Config(filename)
+        finally:
+            shutil.rmtree(tempdir)
+
+    def test_nonexisting_config_cmd(self):
+        """Check behaviour of not existing configuration file"""
+        try:
+            tempdir = tempfile.mkdtemp()
+            filename = os.path.join(tempdir, "Config.yaml")
+            ret = call(["easydms", "-c {0}".format(filename)])
+            self.assertNotEqual(ret, 0)
         finally:
             shutil.rmtree(tempdir)
