@@ -30,13 +30,15 @@ import easydms.config
 
 
 parser = OptionParser(version="easydms version 0.0.0")
+parser.add_option("-c", "--config", dest="CONFIG",
+                  help="path to configuration file")
 
 
 def main():
     (options, args) = parser.parse_args()
 
     try:
-        config = easydms.config.Config()
+        config = easydms.config.Config(options.CONFIG)
     except easydms.config.ErrorNoConfiguration as e:
         msg = ("Error: Could not load configuration\n"
                "following path(s) were searched:\n"
