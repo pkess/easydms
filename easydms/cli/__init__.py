@@ -24,6 +24,7 @@
 #
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
+import sys
 from optparse import OptionParser
 import easydms.config
 
@@ -33,7 +34,15 @@ parser = OptionParser(version="easydms version 0.0.0")
 
 def main():
     (options, args) = parser.parse_args()
-    config = easydms.config.Config()
+
+    try:
+        config = easydms.config.Config()
+    except easydms.config.ErrorNoConfiguration as e:
+        msg = ("Error: Could not load configuration\n"
+               "following path(s) were searched:\n"
+               "{0}").format(e)
+        sys.exit(msg)
+
 
 if __name__ == '__main__':
     main()
