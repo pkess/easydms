@@ -52,10 +52,15 @@ class Config(object):
         else:
             self.path = config_location()
 
-        self.confFile = open(self.path, 'r')
+        self.confFile = None
+        try:
+            self.confFile = open(self.path, 'r')
+        except IOError:
+            raise ErrorNoConfiguration(self.path)
 
     def __del__(self):
-        self.confFile.close()
+        if self.confFile is not None:
+            self.confFile.close()
 
     def __repr__(self):
         self.confFile.seek(0)
