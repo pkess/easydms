@@ -56,6 +56,10 @@ setup(
         ],
     },
 
+    install_requires=[
+        'pyyaml',
+    ],
+
     classifiers=[
         'Topic :: Office/Business',
         'License :: OSI Approved :: MIT License',

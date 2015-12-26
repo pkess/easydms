@@ -26,6 +26,11 @@
 
 import platform
 import os
+import yaml
+try:
+    from yaml import CLoader as yLoader, CDumper as yDumper
+except ImportError:
+    from yaml import Loader as yLoader, Dumper as yDumper
 
 UNIX_DIR_VAR           = 'XDG_CONFIG_HOME'
 UNIX_DIR_FALLBACK      = '~/.config'
@@ -43,6 +48,11 @@ class ErrorNoConfiguration(Exception):
     """
 
 
+class ErrorConfigMalformed(Exception):
+    """Configuration could not be loaded because of malformed content
+    """
+
+
 class Config(object):
     """Central configuration of easydms
     """
@@ -55,6 +65,7 @@ class Config(object):
         self.confFile = None
         try:
             self.confFile = open(self.path, 'r')
+            self.data = yaml.load(self.confFile, Loader=yLoader)
         except IOError:
             raise ErrorNoConfiguration(self.path)
 
@@ -63,8 +74,7 @@ class Config(object):
             self.confFile.close()
 
     def __repr__(self):
-        self.confFile.seek(0)
-        out = self.confFile.read()
+        out = yaml.dump(self.data, Dumper=yDumper)
         return out
 
 
