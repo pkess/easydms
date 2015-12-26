@@ -77,6 +77,12 @@ class Config(object):
         out = yaml.dump(self.data, Dumper=yDumper)
         return out
 
+    def getkey(self, key, default):
+        if key in self.data:
+            return self.data[key]
+
+        return default
+
 
 def list_config_locations():
     """Return a platform-specific list of candidates for user
