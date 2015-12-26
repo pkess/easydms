@@ -39,6 +39,7 @@ def main():
 
     try:
         config = easydms.config.Config(options.CONFIG)
+        assert config
     except easydms.config.ErrorNoConfiguration as e:
         msg = ("Error: Could not load configuration\n"
                "following path(s) were searched:\n"
