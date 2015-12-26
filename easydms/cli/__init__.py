@@ -25,6 +25,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 from optparse import OptionParser
+import easydms.config
 
 
 parser = OptionParser(version="easydms version 0.0.0")
@@ -32,6 +33,7 @@ parser = OptionParser(version="easydms version 0.0.0")
 
 def main():
     (options, args) = parser.parse_args()
+    config = easydms.config.Config()
 
 if __name__ == '__main__':
     main()
