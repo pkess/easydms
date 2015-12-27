@@ -28,6 +28,7 @@ import os
 import sys
 import tempfile
 import shutil
+import subprocess
 
 # Use unittest2 on Python < 2.7.
 try:
@@ -88,22 +89,42 @@ class TestCase(unittest.TestCase):
                          'file exists: {!r}'.format((path)))
 
 
+class TestCaseCommandline(TestCase):
+    """A TestCase which will invoke programm on commandline
+    """
+    def setUp(self):
+        super(TestCaseCommandline, self).setUp()
+
+    def call(self, prog, arg=[]):
+        cmd = list(arg)
+        cmd.insert(0, prog)
+        p = subprocess.Popen(cmd, stdin=self.io.stdin, stdout=self.io.stdout)
+        return p.wait()
+
+
 class DummyOut(object):
     """Collect output of tests to report only on failure
     """
     encoding = 'utf8'
 
     def __init__(self):
-        self.buf = []
+        self.f = tempfile.TemporaryFile()
 
     def write(self, s):
-        self.buf.append(s)
+        self.f.write(s)
 
     def get(self):
-        return b''.join(self.buf)
+        return self.f.read()
 
     def clear(self):
-        self.buf = []
+        self.f.seek(0)
+        self.f.truncate()
+
+    def fileno(self):
+        if self.f is None:
+            self.f = tempfile.TemporaryFile()
+
+        return self.f.fileno()
 
 
 class DummyIn(object):
@@ -112,6 +133,7 @@ class DummyIn(object):
     encoding = 'utf8'
 
     def __init__(self, out=None):
+        self.f = None
         self.buf = []
         self.reads = 0
         self.out = out
@@ -127,6 +149,15 @@ class DummyIn(object):
                 raise InputException()
         self.reads += 1
         return self.buf.pop(0)
+
+    def fileno(self):
+        if self.f is None:
+            self.f = tempfile.TemporaryFile()
+            for l in self.buf:
+                self.f.write(l)
+            self.f.seek(0)
+
+        return self.f.fileno()
 
 
 class DummyIO(object):
