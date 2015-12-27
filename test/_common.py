@@ -80,6 +80,10 @@ class TestCase(unittest.TestCase):
 
         self.io.restore()
 
+    def createConfigDir(self):
+        configpath = os.path.join(self.temp_dir, ".config")
+        os.mkdir(configpath)
+
     def assertExists(self, path):
         self.assertTrue(os.path.exists(path),
                         'file does not exist: {!r}'.format(path))
