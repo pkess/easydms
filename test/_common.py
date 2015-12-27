@@ -25,6 +25,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 import os
+import sys
 import tempfile
 import shutil
 
@@ -33,6 +34,17 @@ try:
     import unittest2 as unittest
 except ImportError:
     import unittest
+
+
+class InputException(Exception):
+    def __init__(self, output=None):
+        self.output = output
+
+    def __str__(self):
+        msg = "Attempt to read with no input provided."
+        if self.output is not None:
+            msg += " Output: %s" % self.output
+        return msg
 
 
 # A test harness for all easydms tests.
@@ -54,6 +66,9 @@ class TestCase(unittest.TestCase):
         self._old_home = os.environ.get('HOME')
         os.environ['HOME'] = self.temp_dir
 
+        # Initialize, but don't install, a DummyIO.
+        self.io = DummyIO()
+
     def tearDown(self):
         if os.path.isdir(self.temp_dir):
             shutil.rmtree(self.temp_dir)
@@ -62,6 +77,8 @@ class TestCase(unittest.TestCase):
         else:
             os.environ['HOME'] = self._old_home
 
+        self.io.restore()
+
     def assertExists(self, path):
         self.assertTrue(os.path.exists(path),
                         'file does not exist: {!r}'.format(path))
@@ -69,3 +86,70 @@ class TestCase(unittest.TestCase):
     def assertNotExists(self, path):
         self.assertFalse(os.path.exists(path),
                          'file exists: {!r}'.format((path)))
+
+
+class DummyOut(object):
+    """Collect output of tests to report only on failure
+    """
+    encoding = 'utf8'
+
+    def __init__(self):
+        self.buf = []
+
+    def write(self, s):
+        self.buf.append(s)
+
+    def get(self):
+        return b''.join(self.buf)
+
+    def clear(self):
+        self.buf = []
+
+
+class DummyIn(object):
+    """Simulate input for tests
+    """
+    encoding = 'utf8'
+
+    def __init__(self, out=None):
+        self.buf = []
+        self.reads = 0
+        self.out = out
+
+    def add(self, s):
+        self.buf.append(s + b'\n')
+
+    def readline(self):
+        if not self.buf:
+            if self.out:
+                raise InputException(self.out.get())
+            else:
+                raise InputException()
+        self.reads += 1
+        return self.buf.pop(0)
+
+
+class DummyIO(object):
+    """Mocks input and output streams for testing UI code."""
+    def __init__(self):
+        self.stdout = DummyOut()
+        self.stdin = DummyIn(self.stdout)
+
+    def addinput(self, s):
+        self.stdin.add(s)
+
+    def getoutput(self):
+        res = self.stdout.get()
+        self.stdout.clear()
+        return res
+
+    def readcount(self):
+        return self.stdin.reads
+
+    def install(self):
+        sys.stdin = self.stdin
+        sys.stdout = self.stdout
+
+    def restore(self):
+        sys.stdin = sys.__stdin__
+        sys.stdout = sys.__stdout__
