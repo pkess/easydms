@@ -102,7 +102,8 @@ class TestCaseCommandline(TestCase):
     def call(self, prog, arg=[]):
         cmd = list(arg)
         cmd.insert(0, prog)
-        p = subprocess.Popen(cmd, stdin=self.io.stdin, stdout=self.io.stdout)
+        p = subprocess.Popen(cmd, stdin=self.io.stdin, stdout=self.io.stdout,
+                             stderr=self.io.stdout)
         return p.wait()
 
 
