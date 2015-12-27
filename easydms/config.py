@@ -53,6 +53,11 @@ class ErrorConfigMalformed(Exception):
     """
 
 
+class ErrorConfigKeyNotFound(Exception):
+    """Key is not present in configuration
+    """
+
+
 class Config(object):
     """Central configuration of easydms
     """
@@ -77,7 +82,13 @@ class Config(object):
         out = yaml.dump(self.data, Dumper=yDumper)
         return out
 
-    def getkey(self, key, default):
+    def getRequiredKey(self, key):
+        if key in self.data:
+            return self.data[key]
+
+        raise ErrorConfigKeyNotFound(key)
+
+    def getKey(self, key, default):
         if key in self.data:
             return self.data[key]
 
