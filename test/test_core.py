@@ -62,6 +62,9 @@ class TestConfig(TestCase):
         """Check dump of config"""
         config = easydms.config.Config()
         print(config)
+        self.io.stdout.clear()
+        sys.argv = ["prog"]
+        easydms.cli.main()
 
     def test_get_key(self):
         """Check getkey method of config"""
