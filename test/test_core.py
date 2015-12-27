@@ -29,9 +29,11 @@
 from _common import TestCase, TestCaseCommandline
 import tempfile
 import os
+import sys
 import shutil
 
 import easydms.config
+import easydms.cli
 
 
 class TestConfig(TestCase):
@@ -47,6 +49,12 @@ class TestConfig(TestCase):
             filename = os.path.join(tempdir, "Config.yaml")
             with self.assertRaises(easydms.config.ErrorNoConfiguration):
                 easydms.config.Config(filename)
+
+            with self.assertRaises(SystemExit) as cm:
+                sys.argv = ["prog", "-c", filename]
+                easydms.cli.main()
+            self.assertNotEqual(cm.exception.code, 0)
+
         finally:
             shutil.rmtree(tempdir)
 
