@@ -26,16 +26,17 @@
 
 """Test if version will be displayed correctly."""
 
-from _common import unittest
+from _common import TestCase, TestCaseCommandline
 
-from subprocess import check_call
 import sys
 import easydms.cli
 
 
-class TestVersion(unittest.TestCase):
+class TestVersion(TestCase):
     def setUp(self):
         super(TestVersion, self).setUp()
+
+        self.io.install()
 
     def test_print_version(self):
         """Check if easydms prints version string"""
@@ -44,6 +45,13 @@ class TestVersion(unittest.TestCase):
             easydms.cli.main()
         self.assertEqual(cm.exception.code, 0)
 
-    def test_print_version_and_exit(self):
+
+class TestVersionCmd(TestCaseCommandline):
+    def setUp(self):
+        super(TestVersionCmd, self).setUp()
+
+        self.io.install()
+
+    def test_print_version(self):
         """Check if easydms can be called and exits zero"""
-        check_call(["easydms", "--version"])
+        self.call("easydms", ["--version"])
