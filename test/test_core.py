@@ -58,3 +58,13 @@ class TestConfig(unittest.TestCase):
             self.assertNotEqual(ret, 0)
         finally:
             shutil.rmtree(tempdir)
+
+    def test_dump_config(self):
+        """Check dump of config"""
+        config = easydms.config.Config()
+        print(config)
+
+    def test_dump_config_cmd(self):
+        """Check dump of config by commandline invoke"""
+        ret = call(["easydms", "config", "dump"])
+        self.assertEqual(ret, 0)
