@@ -26,18 +26,19 @@
 
 """Test core funtionalities."""
 
-from _common import unittest
+from _common import TestCase, TestCaseCommandline
 import tempfile
 import os
 import shutil
-from subprocess import call
 
 import easydms.config
 
 
-class TestConfig(unittest.TestCase):
+class TestConfig(TestCase):
     def setUp(self):
         super(TestConfig, self).setUp()
+        self.createConfigDir()
+        self.io.install()
 
     def test_nonexisting_config(self):
         """Check behaviour of not existing configuration file"""
@@ -49,22 +50,28 @@ class TestConfig(unittest.TestCase):
         finally:
             shutil.rmtree(tempdir)
 
-    def test_nonexisting_config_cmd(self):
-        """Check behaviour of not existing configuration file"""
-        try:
-            tempdir = tempfile.mkdtemp()
-            filename = os.path.join(tempdir, "Config.yaml")
-            ret = call(["easydms", "-c {0}".format(filename)])
-            self.assertNotEqual(ret, 0)
-        finally:
-            shutil.rmtree(tempdir)
-
     def test_dump_config(self):
         """Check dump of config"""
         config = easydms.config.Config()
         print(config)
 
+
+class TestConfigCmd(TestCaseCommandline):
+    def setUp(self):
+        super(TestConfigCmd, self).setUp()
+        self.createConfigDir()
+
+    def test_nonexisting_config_cmd(self):
+        """Check behaviour of not existing configuration file"""
+        try:
+            tempdir = tempfile.mkdtemp()
+            filename = os.path.join(tempdir, "Config.yaml")
+            ret = self.call("easydms", ["-c {0}".format(filename)])
+            self.assertNotEqual(ret, 0)
+        finally:
+            shutil.rmtree(tempdir)
+
     def test_dump_config_cmd(self):
         """Check dump of config by commandline invoke"""
-        ret = call(["easydms", "config", "dump"])
+        ret = self.call("easydms", ["config", "dump"])
         self.assertEqual(ret, 0)
