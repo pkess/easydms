@@ -27,6 +27,7 @@
 import os
 import sys
 from optparse import OptionParser
+import datetime
 import easydms.config
 import easydms.dbcore as dbcore
 
@@ -62,6 +63,37 @@ def print_usage_config():
     sys.exit("Usage (Not implemented)")
 
 
+def print_usage_add():
+    sys.exit("Usage (Not implemented)")
+
+
+def add(db, docs):
+    for doc in docs:
+        query = "SELECT COUNT() FROM document WHERE path='{0}'".format(doc)
+        result = db.conn.execute(query)
+        count = result.fetchall()[0][0]
+        date = guess_document_date(doc)
+        if count == 0:
+            query = """INSERT INTO document (path, date) VALUES
+            ('{0}','{1}')""".format(doc, date.format())
+            print(query)
+            db.conn.execute(query)
+            db.conn.commit()
+
+
+def guess_document_date(doc):
+    ret = datetime.date(2015, 12, 29)
+    return ret
+
+
+def subcommand_add(options, args, database):
+    if len(args) < 2:
+        print("No files were given")
+        print_usage_add()
+    files = args[1:]
+    add(database, files)
+
+
 def main():
     (options, args) = parser.parse_args()
 
@@ -92,7 +124,14 @@ def main():
                               config.getRequiredKey('library'))
         db = dbcore.Database(dbpath)
         db.create_db()
-        assert db
+
+        subcommands = {
+            'add': subcommand_add,
+        }
+        if len(args) > 0:
+            if args[0] in subcommands.keys():
+                subcommands[args[0]](options, args, db)
+
     except easydms.config.ErrorNoConfiguration as e:
         msg = ("Error: Could not load configuration\n"
                "following path(s) were searched:\n"
