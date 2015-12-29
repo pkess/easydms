@@ -155,6 +155,12 @@ class DummyIn(object):
         self.reads += 1
         return self.buf.pop(0)
 
+    def clear(self):
+        self.buf = []
+        if self.f is not None:
+            self.f.seek(0)
+            self.f.truncate()
+
     def fileno(self):
         if self.f is None:
             self.f = tempfile.TemporaryFile()
@@ -181,6 +187,10 @@ class DummyIO(object):
 
     def readcount(self):
         return self.stdin.reads
+
+    def clear(self):
+        self.stdin.clear()
+        self.stdout.clear()
 
     def install(self):
         sys.stdin = self.stdin
