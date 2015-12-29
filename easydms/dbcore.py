@@ -42,8 +42,12 @@ class Database(object):
 
     def create_db(self):
         self.create_table(
-            u"document", (u"id", u"INTEGER"),
-            [(u"path", u"TEXT"), (u"date", u"TEXT")])
+            u"document", (u"id", u"INTEGER"), [
+                (u"path", u"TEXT"),
+                (u"year", u"INTEGER"),
+                (u"month", u"INTEGER"),
+                (u"day", u"INTEGER")
+            ])
         self.conn.commit()
 
     def create_table(self, name, primary, fields):
