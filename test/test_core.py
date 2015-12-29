@@ -72,16 +72,20 @@ class TestConfig(TestCase):
         pairs = {'library': '~/home/documents/dms',
                  'key': 'value',
                  }
-        tempconfig = tempfile.NamedTemporaryFile(suffix=".yaml", delete=False)
-        for key, value in pairs.iteritems():
-            tempconfig.write("{0}: {1}\n".format(key, value))
-        tempconfig.close()
-        config = easydms.config.Config(tempconfig.name)
+        try:
+            tempconfig = tempfile.NamedTemporaryFile(
+                suffix=".yaml", delete=False)
+            for key, value in pairs.iteritems():
+                tempconfig.write("{0}: {1}\n".format(key, value))
+            tempconfig.close()
+            config = easydms.config.Config(tempconfig.name)
 
-        for key, value in pairs.iteritems():
-            self.assertEqual(config.getKey(key, "Spam"), value)
-        for key, value in pairs.iteritems():
-            self.assertEqual(config.getRequiredKey(key), value)
+            for key, value in pairs.iteritems():
+                self.assertEqual(config.getKey(key, "Spam"), value)
+            for key, value in pairs.iteritems():
+                self.assertEqual(config.getRequiredKey(key), value)
+        finally:
+            os.remove(tempconfig.name)
 
     def test_get_invalid_key(self):
         """Check getkey method of config with not existing key"""
@@ -89,17 +93,21 @@ class TestConfig(TestCase):
                  'key': 'value',
                  }
         exceptionKeys = ['Hello', 'spam']
-        tempconfig = tempfile.NamedTemporaryFile(suffix=".yaml", delete=False)
-        tempconfig.write('ham: eggs')
-        tempconfig.close()
-        config = easydms.config.Config(tempconfig.name)
+        try:
+            tempconfig = tempfile.NamedTemporaryFile(
+                suffix=".yaml", delete=False)
+            tempconfig.write('ham: eggs')
+            tempconfig.close()
+            config = easydms.config.Config(tempconfig.name)
 
-        for key, value in pairs.iteritems():
-            self.assertEqual(config.getKey(key, value), value)
+            for key, value in pairs.iteritems():
+                self.assertEqual(config.getKey(key, value), value)
 
-        for key in exceptionKeys:
-            with self.assertRaises(easydms.config.ErrorConfigKeyNotFound):
-                config.getRequiredKey(key)
+            for key in exceptionKeys:
+                with self.assertRaises(easydms.config.ErrorConfigKeyNotFound):
+                    config.getRequiredKey(key)
+        finally:
+            os.remove(tempconfig.name)
 
 
 class TestConfigCmd(TestCaseCommandline):
