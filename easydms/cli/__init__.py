@@ -58,11 +58,24 @@ def input_yn(prompt, require=False):
     return input_yn(prompt, require)
 
 
+def print_usage_config():
+    sys.exit("Usage (Not implemented)")
+
+
 def main():
     (options, args) = parser.parse_args()
 
     try:
         config = easydms.config.Config(options.CONFIG)
+        if len(args) > 0 and args[0] == 'config':
+            if len(args) == 1:
+                print_usage_config()
+
+            if args[1] == 'dump':
+                print(config)
+                sys.exit()
+            else:
+                print_usage_config()
 
         dmsdirectory = config.getRequiredKey('directory')
         dmsdirectory = os.path.expanduser(dmsdirectory)

@@ -63,8 +63,9 @@ class TestConfig(TestCase):
         config = easydms.config.Config()
         print(config)
         self.io.stdout.clear()
-        sys.argv = ["prog"]
-        easydms.cli.main()
+        sys.argv = ["prog", "config", "dump"]
+        with self.assertRaises(SystemExit):
+            easydms.cli.main()
 
     def test_get_key(self):
         """Check getkey method of config"""
