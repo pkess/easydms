@@ -91,6 +91,7 @@ def main():
         dbpath = os.path.join(dmsdirectory,
                               config.getRequiredKey('library'))
         db = dbcore.Database(dbpath)
+        db.create_db()
         assert db
     except easydms.config.ErrorNoConfiguration as e:
         msg = ("Error: Could not load configuration\n"

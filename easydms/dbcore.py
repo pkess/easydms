@@ -27,17 +27,60 @@
 import sqlite3
 
 
+class ErrorDatabaseStructure(Exception):
+    """Existing database structure does not match programmed structure"""
+
+
 class Database(object):
     """Central Database abstraction layer of easydms"""
     def __init__(self, path):
         self.path = path
         self.conn = sqlite3.connect(self.path)
-        self._create_db()
 
     def __del__(self):
         self.conn.close()
 
-    def _create_db(self):
-        self.conn.execute('''CREATE TABLE IF NOT EXISTS document
-                             (id INTEGER PRIMARY KEY, path TEXT, date TEXT)''')
+    def create_db(self):
+        self.create_table(
+            u"document", (u"id", u"INTEGER"),
+            [(u"path", u"TEXT"), (u"date", u"TEXT")])
         self.conn.commit()
+
+    def create_table(self, name, primary, fields):
+        """Create a table if not already existing
+
+        Will extend existing table automatically if new rows columns are
+        requested"""
+        query = """CREATE TABLE IF NOT EXISTS {0}
+                ({1} {2} PRIMARY KEY""".format(
+                name, primary[0], primary[1])
+        for field in fields:
+            query = "{0}, {1} {2}".format(query, field[0], field[1])
+        query = "{0})".format(query)
+        self.conn.execute(query)
+        fields.insert(0, primary)
+        self.check_table(name, fields)
+
+    def check_table(self, table, fields):
+        """Check if table layout in db matches expected layout"""
+        query = "PRAGMA table_info({0})".format(table)
+        result = self.conn.execute(query)
+        rows = result.fetchall()
+        rowmap = dict()
+        for row in rows:
+            rowmap[row[1]] = row[2]
+        fieldmap = dict()
+        for field in fields:
+            fieldmap[field[0]] = field[1]
+        rowmap = rowmap.viewitems()
+        fieldmap = fieldmap.viewitems()
+        newFields = fieldmap - rowmap
+        changedFields = rowmap ^ fieldmap
+        if len(changedFields) != 0:
+            if newFields == changedFields:
+                self.add_columns(table, newFields)
+            elif len(changedFields) != 0:
+                raise ErrorDatabaseStructure(changedFields, rowmap, fieldmap)
+
+    def add_columns(self, table, cols):
+        raise Exception("Not implemented: extend db")
