@@ -44,7 +44,7 @@ class InputException(Exception):
     def __str__(self):
         msg = "Attempt to read with no input provided."
         if self.output is not None:
-            msg += " Output: %s" % self.output
+            msg += "\n%s" % self.output.getDecorated()
         return msg
 
 
@@ -121,6 +121,16 @@ class DummyOut(object):
     def get(self):
         return self.f.read()
 
+    def getDecorated(self):
+        msg = "-----------------------------\n"\
+              "- Start of collected Output\n"\
+              "-----------------------------\n"\
+              "%s"\
+              "-----------------------------\n"\
+              "- End of collected Output\n"\
+              "-----------------------------\n" % self.get()
+        return msg
+
     def clear(self):
         self.f.seek(0)
         self.f.truncate()
@@ -149,7 +159,7 @@ class DummyIn(object):
     def readline(self):
         if not self.buf:
             if self.out:
-                raise InputException(self.out.get())
+                raise InputException(self.out)
             else:
                 raise InputException()
         self.reads += 1
