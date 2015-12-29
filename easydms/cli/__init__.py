@@ -48,7 +48,7 @@ def input_yn(prompt, require=False):
 
     sys.stdout.write(prompt)
     sys.stdout.write(" (Yes/No) ")
-    choice = raw_input().lower()
+    choice = input().lower()
     if choice in yes:
         return True
     elif choice in no:

@@ -76,8 +76,8 @@ class Database(object):
         fieldmap = dict()
         for field in fields:
             fieldmap[field[0]] = field[1]
-        rowmap = rowmap.viewitems()
-        fieldmap = fieldmap.viewitems()
+        rowmap = rowmap.items()
+        fieldmap = fieldmap.items()
         newFields = fieldmap - rowmap
         changedFields = rowmap ^ fieldmap
         if len(changedFields) != 0:

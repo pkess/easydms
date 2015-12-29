@@ -116,7 +116,7 @@ class DummyOut(object):
         self.f = tempfile.TemporaryFile()
 
     def write(self, s):
-        self.f.write(s)
+        self.f.write(s.encode('UTF-8'))
 
     def get(self):
         return self.f.read()
@@ -154,7 +154,7 @@ class DummyIn(object):
         self.out = out
 
     def add(self, s):
-        self.buf.append(s + b'\n')
+        self.buf.append(s + b'\n'.decode('UTF-8'))
 
     def readline(self):
         if not self.buf:

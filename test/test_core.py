@@ -75,14 +75,15 @@ class TestConfig(TestCase):
         try:
             tempconfig = tempfile.NamedTemporaryFile(
                 suffix=".yaml", delete=False)
-            for key, value in pairs.iteritems():
-                tempconfig.write("{0}: {1}\n".format(key, value))
+            for key, value in pairs.items():
+                tempconfig.write("{0}: {1}\n".format(
+                    key, value).encode('UTF-8'))
             tempconfig.close()
             config = easydms.config.Config(tempconfig.name)
 
-            for key, value in pairs.iteritems():
+            for key, value in pairs.items():
                 self.assertEqual(config.getKey(key, "Spam"), value)
-            for key, value in pairs.iteritems():
+            for key, value in pairs.items():
                 self.assertEqual(config.getRequiredKey(key), value)
         finally:
             os.remove(tempconfig.name)
@@ -96,11 +97,11 @@ class TestConfig(TestCase):
         try:
             tempconfig = tempfile.NamedTemporaryFile(
                 suffix=".yaml", delete=False)
-            tempconfig.write('ham: eggs')
+            tempconfig.write('ham: eggs'.encode('UTF-8'))
             tempconfig.close()
             config = easydms.config.Config(tempconfig.name)
 
-            for key, value in pairs.iteritems():
+            for key, value in pairs.items():
                 self.assertEqual(config.getKey(key, value), value)
 
             for key in exceptionKeys:

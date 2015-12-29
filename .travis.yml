@@ -24,15 +24,13 @@
 
 language: python
 sudo: false
-
-matrix:
-    include:
-        - python: 2.7
-          env: {TOX_ENV: py27cov, COVERAGE: 1}
-        - python: pypy
-          env: {TOX_ENV: pypy}
-        - python: 2.7
-          env: {TOX_ENV: flake8, NONTEST: 1}
+        
+python:
+    - 3.4
+        
+env:
+    - {TOX_ENV: py34cov, COVERAGE: 1}
+    - {TOX_ENV: flake8, NONTEST: 1}
 
 # dependencies
 install:
