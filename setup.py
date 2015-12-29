@@ -58,6 +58,7 @@ setup(
 
     install_requires=[
         'pyyaml',
+        'ocrmypdf',
     ],
 
     classifiers=[
