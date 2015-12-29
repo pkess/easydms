@@ -109,6 +109,27 @@ class TestConfig(TestCase):
         finally:
             os.remove(tempconfig.name)
 
+    def test_create_dir(self):
+        dmsdir = '~/documents/dms'
+        configfilePath = os.path.expanduser("~/.config/easydms.yaml")
+        configfile = open(configfilePath, mode="w")
+        configfile.write('library: easydms.db\n')
+        configfile.write('directory: {0}\n'.format(dmsdir))
+        configfile.close()
+
+        with self.assertRaises(SystemExit):
+            self.io.addinput("n")
+            sys.argv = ["prog"]
+            easydms.cli.main()
+        self.assertNotExists(os.path.expanduser(dmsdir))
+        self.io.addinput("y")
+        sys.argv = ["prog"]
+        easydms.cli.main()
+        self.assertExists(os.path.expanduser(dmsdir))
+        sys.argv = ["prog"]
+        easydms.cli.main()
+        self.assertExists(os.path.expanduser(dmsdir))
+
 
 class TestConfigCmd(TestCaseCommandline):
     def setUp(self):
