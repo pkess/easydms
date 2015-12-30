@@ -28,35 +28,13 @@ import os
 import sys
 from optparse import OptionParser
 import datetime
+from easydms.util.prompt import prompt_yn
 import easydms.config
 import easydms.dbcore as dbcore
 
 parser = OptionParser(version="easydms version 0.0.0")
 parser.add_option("-c", "--config", dest="CONFIG",
                   help="path to configuration file")
-
-
-def input_yn(prompt, require=False):
-    """Prompts the user for a "yes" or "no" response. The default is
-    "yes" unless `require` is `True`, in which case there is no default.
-    """
-    yes = set(['yes', 'y', 'ye'])
-    no = set(['no', 'n'])
-
-    if not require:
-        # raw_input returns the empty string for "enter"
-        yes.add('')
-
-    sys.stdout.write(prompt)
-    sys.stdout.write(" (Yes/No) ")
-    choice = input().lower()
-    if choice in yes:
-        return True
-    elif choice in no:
-        return False
-
-    print("Please respond with 'yes' or 'no'")
-    return input_yn(prompt, require)
 
 
 def print_usage_config():
@@ -112,7 +90,7 @@ def main():
         dmsdirectory = config.getRequiredKey('directory')
         dmsdirectory = os.path.expanduser(dmsdirectory)
         if not os.path.exists(dmsdirectory):
-            create = input_yn(
+            create = prompt_yn(
                 "Directory \"{0}\" does not exist. Create?".format(
                     dmsdirectory))
             if create:

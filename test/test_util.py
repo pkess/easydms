@@ -28,15 +28,15 @@
 
 from _common import TestCase
 
-import easydms.cli
+import easydms.util.prompt
 
 
-class TestCLI(TestCase):
+class TestUtilPrompt(TestCase):
     def setUp(self):
-        super(TestCLI, self).setUp()
+        super(TestUtilPrompt, self).setUp()
         self.io.install()
 
-    def test_input_yn(self):
+    def test_prompt_yn(self):
         """Check yes no prompt for user"""
         trueInput = ["y", "Y", "yes", "YES"]
         falseInput = ["n", "no", "N", "NO"]
@@ -44,28 +44,28 @@ class TestCLI(TestCase):
         prompt = "Prompt an input"
         for inp in trueInput:
             self.io.addinput(inp)
-            self.assertTrue(easydms.cli.input_yn(prompt))
+            self.assertTrue(easydms.util.prompt.prompt_yn(prompt))
             self.io.clear()
         for inp in falseInput:
             self.io.addinput(inp)
-            self.assertFalse(easydms.cli.input_yn(prompt))
+            self.assertFalse(easydms.util.prompt.prompt_yn(prompt))
             self.io.clear()
         for inp in ambInput:
             self.io.addinput(inp)
             self.io.addinput("y")
-            self.assertTrue(easydms.cli.input_yn(prompt))
+            self.assertTrue(easydms.util.prompt.prompt_yn(prompt))
             self.io.clear()
         self.io.addinput("")
         self.io.addinput("y")
-        self.assertTrue(easydms.cli.input_yn(prompt, True))
+        self.assertTrue(easydms.util.prompt.prompt_yn(prompt, True))
         self.io.clear()
         self.io.addinput("")
         self.io.addinput("n")
-        self.assertFalse(easydms.cli.input_yn(prompt, True))
+        self.assertFalse(easydms.util.prompt.prompt_yn(prompt, True))
         self.io.clear()
         self.io.addinput("")
-        self.assertTrue(easydms.cli.input_yn(prompt))
+        self.assertTrue(easydms.util.prompt.prompt_yn(prompt))
         self.io.clear()
         self.io.addinput("")
-        self.assertTrue(easydms.cli.input_yn(prompt, False))
+        self.assertTrue(easydms.util.prompt.prompt_yn(prompt, False))
         self.io.clear()
