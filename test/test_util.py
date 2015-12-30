@@ -75,28 +75,65 @@ class TestUtilPrompt(TestCase):
         """Test function to prompt an integer value from user"""
         prompt_int = easydms.util.prompt.prompt_int
         tests = [
-            # prompt  , default , min   , max   , input , result          noqa
-            ('prompt' , 5       , None  , None  , ['']          , 5   ), # noqa
-            (''       , 5       , 10    , None  , ['']          , 10  ), # noqa
-            ('prompt' , 5       , None  , 2     , ['']          , 2   ), # noqa
-            ('prompt' , 5       , None  , None  , ['8']         , 8   ), # noqa
-            ('prompt' , 5       , 10    , 100   , ['12']        , 12  ), # noqa
-            ('prompt' , 5       , None  , None  , ['12.8', '']  , 12  ), # noqa
-            ('prompt' , 5       , None  , None  , ['12.8', '1'] , 1   ), # noqa
-            ('prompt' , 5       , 10    , 100   , ['8', '']     , 10  ), # noqa
-            ('prompt' , 5       , None  , None  , ['M', '']     , 5   ), # noqa
-            ('prompt' , 5       , 2     , 7     , ['8', '']     , 7   ), # noqa
+            # ( prompt
+            #   default,
+            #    min,
+            #    max,
+            #    input,
+            #    result
+            ('prompt',
+             5, None, None,
+             [''],
+             5),
+            ('',
+             5, 10, None,
+             [''],
+             10),
+            ('prompt',
+             5, None, 2,
+             [''],
+             2),
+            ('prompt',
+             5, None, None,
+             ['8'],
+             8),
+            ('prompt',
+             5, 10, 100,
+             ['12'],
+             12),
+            ('prompt',
+             5, None, None,
+             ['12.8', ''],
+             12),
+            ('prompt',
+             5, None, None,
+             ['12.8', '1'],
+             1),
+            ('prompt',
+             5, 10, 100,
+             ['8', ''],
+             10),
+            ('prompt',
+             5, None, None,
+             ['M', ''],
+             5),
+            ('prompt',
+             5, 2, 7,
+             ['8', ''],
+             7),
         ]
         for test in tests:
+            prompt = test[0]
+            default = test[1]
+            min = test[2]
+            max = test[3]
+            inp = test[4]
+            result = test[5]
             self.io.clear()
-            for inp in test[4]: # input noqa
+            for inp in inp:
                 self.io.addinput(inp)
-            self.assertEqual(prompt_int(test[0],  # prompt
-                                        test[1],  # default
-                                        test[2],  # min
-                                        test[3]), # max
-                             test[5], # result
-                             msg=str(test))
+            self.assertEqual(prompt_int(prompt, default, min, max),
+                             result, msg=str(test))
 
 
 class TestUtilDatetime(TestCase):
