@@ -84,6 +84,8 @@ class TestUtilPrompt(TestCase):
             ('prompt' , 5       , None  , None  , ['12.8', '']  , 12  ), # noqa
             ('prompt' , 5       , None  , None  , ['12.8', '1'] , 1   ), # noqa
             ('prompt' , 5       , 10    , 100   , ['8', '']     , 10  ), # noqa
+            ('prompt' , 5       , None  , None  , ['M', '']     , 5   ), # noqa
+            ('prompt' , 5       , 2     , 7     , ['8', '']     , 7   ), # noqa
         ]
         for test in tests:
             self.io.clear()
