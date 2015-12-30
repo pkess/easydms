@@ -83,4 +83,5 @@ class Database(object):
                 raise ErrorDatabaseStructure(changedFields, rowmap, fieldmap)
 
     def add_columns(self, table, cols):
+        """Add defined number of columns to a table"""
         raise Exception("Not implemented: extend db")
