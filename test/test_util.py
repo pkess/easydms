@@ -29,6 +29,7 @@
 from _common import TestCase
 
 import easydms.util.prompt
+import easydms.util.datetime
 
 
 class TestUtilPrompt(TestCase):
@@ -69,3 +70,19 @@ class TestUtilPrompt(TestCase):
         self.io.addinput("")
         self.assertTrue(easydms.util.prompt.prompt_yn(prompt, False))
         self.io.clear()
+
+
+class TestUtilDatetime(TestCase):
+    def setUp(self):
+        super(TestUtilDatetime, self).setUp()
+
+    def test_days_in_month(self):
+        self.assertEqual(easydms.util.datetime.days_in_month(2012, 2), 29)
+        self.assertEqual(easydms.util.datetime.days_in_month(2013, 2), 28)
+        self.assertEqual(easydms.util.datetime.days_in_month(2014, 2), 28)
+        self.assertEqual(easydms.util.datetime.days_in_month(2015, 2), 28)
+        self.assertEqual(easydms.util.datetime.days_in_month(2016, 2), 29)
+        self.assertEqual(easydms.util.datetime.days_in_month(2015, 10), 31)
+        self.assertEqual(easydms.util.datetime.days_in_month(2015, 11), 30)
+        self.assertEqual(easydms.util.datetime.days_in_month(2015, 12), 31)
+        self.assertEqual(easydms.util.datetime.days_in_month(2016, 1), 31)
