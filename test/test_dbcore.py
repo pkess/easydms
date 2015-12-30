@@ -26,9 +26,10 @@
 
 """Test code in dbcore.py"""
 
-from _common import TestCase
+from _common import testDataPath, TestCase
 import tempfile
 import os
+import datetime
 
 import easydms.dbcore
 
@@ -39,9 +40,11 @@ class TestDatabase(TestCase):
         self.io.install()
 
     def test_create_db_memory(self):
-        """Check creation of new database without file"""
-        db = easydms.dbcore.Database(":memory:")
-        db.create_db()
+        """Check creation of new database without file
+        Also used in other tests to create a database
+        """
+        self.db = easydms.dbcore.Database(":memory:")
+        self.db.create_db()
 
     def test_create_db_file(self):
         """Check creation of new database with file"""
@@ -79,3 +82,11 @@ class TestDatabase(TestCase):
             db.create_table(table, primary, extended_fields)
         with self.assertRaises(easydms.dbcore.ErrorDatabaseStructure):
             db.create_table(table, primary, changed_fields)
+
+    def test_add(self):
+        self.test_create_db_memory()
+        date = datetime.date(2015, 12, 30)
+        doc = os.path.join(testDataPath, 'simplepdf.pdf')
+        self.db.insert_document(doc, date)
+        with self.assertRaises(TypeError):
+            self.db.insert_document(doc, "Test")

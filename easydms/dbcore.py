@@ -25,6 +25,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 import sqlite3
+import datetime
 
 
 class ErrorDatabaseStructure(Exception):
@@ -85,3 +86,14 @@ class Database(object):
     def add_columns(self, table, cols):
         """Add defined number of columns to a table"""
         raise Exception("Not implemented: extend db")
+
+    def insert_document(self, path, date):
+        """Insert a document to database"""
+        if not isinstance(date, datetime.date):
+            raise TypeError("date should be of type datetime.date"
+                            ", {0} given".format(type(date)))
+        query = """INSERT INTO document (path, date) VALUES
+        ('{0}','{1}')""".format(path, str(date))
+        print(query)
+        self.conn.execute(query)
+        self.conn.commit()
