@@ -71,6 +71,31 @@ class TestUtilPrompt(TestCase):
         self.assertTrue(easydms.util.prompt.prompt_yn(prompt, False))
         self.io.clear()
 
+    def test_prompt_int(self):
+        """Test function to prompt an integer value from user"""
+        prompt_int = easydms.util.prompt.prompt_int
+        tests = [
+            # prompt  , default , min   , max   , input , result          noqa
+            ('prompt' , 5       , None  , None  , ['']          , 5   ), # noqa
+            (''       , 5       , 10    , None  , ['']          , 10  ), # noqa
+            ('prompt' , 5       , None  , 2     , ['']          , 2   ), # noqa
+            ('prompt' , 5       , None  , None  , ['8']         , 8   ), # noqa
+            ('prompt' , 5       , 10    , 100   , ['12']        , 12  ), # noqa
+            ('prompt' , 5       , None  , None  , ['12.8', '']  , 12  ), # noqa
+            ('prompt' , 5       , None  , None  , ['12.8', '1'] , 1   ), # noqa
+            ('prompt' , 5       , 10    , 100   , ['8', '']     , 10  ), # noqa
+        ]
+        for test in tests:
+            self.io.clear()
+            for inp in test[4]: # input noqa
+                self.io.addinput(inp)
+            self.assertEqual(prompt_int(test[0],  # prompt
+                                        test[1],  # default
+                                        test[2],  # min
+                                        test[3]), # max
+                             test[5], # result
+                             msg=str(test))
+
 
 class TestUtilDatetime(TestCase):
     def setUp(self):

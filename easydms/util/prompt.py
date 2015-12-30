@@ -48,3 +48,31 @@ def prompt_yn(prompt, require=False):
 
     print("Please respond with 'yes' or 'no'")
     return prompt_yn(prompt, require)
+
+
+def prompt_int(prompt, default=None, min=None, max=None):
+    sys.stdout.write(prompt)
+    if default is not None:
+        sys.stdout.write(' ({0})'.format(default))
+        if min is not None and default < min:
+            default = min
+        elif max is not None and default > max:
+            default = max
+    sys.stdout.write(' ')
+    inp = input()
+    if default is not None and inp == '':
+        return default
+    try:
+        ret = int(inp)
+        if min is not None and ret < min:
+            ret = prompt_int(prompt, min, min, max)
+        elif max is not None and ret > max:
+            ret = prompt_int(prompt, max, min, max)
+        sys.stdout.write('\n')
+        return ret
+    except ValueError:
+        try:
+            newGuess = float(inp)
+            return prompt_int(prompt, int(newGuess), min, max)
+        except ValueError:
+            return prompt_int(prompt, default, min, max)
