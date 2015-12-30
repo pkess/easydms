@@ -37,6 +37,9 @@ except ImportError:
     import unittest
 
 
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
+
+
 class InputException(Exception):
     def __init__(self, output=None):
         self.output = output
