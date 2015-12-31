@@ -25,6 +25,9 @@
 [run]
 omit =
     */test/*
+# 3rd party packages:
+    */yaml/*
+    */sqlite3/*
 
 [report]
 exclude_lines =
