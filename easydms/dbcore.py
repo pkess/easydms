@@ -110,6 +110,18 @@ class Database(object):
             raise Exception()
         return tagname
 
+    def get_tag_alternatives(self, tag):
+        """Get alternative names for tag from db"""
+        query = """SELECT tagalternative.name as tagalt
+                FROM tagalternative INNER JOIN tag
+                ON tag.name = tagalternative.tag
+                WHERE tag.name = "{0}" """.format(tag)
+        result = self.conn.execute(query)
+        ret = []
+        for res in result:
+            ret.append(res[0])
+        return ret
+
     def insert_document(self, path, date):
         """Insert a document to database"""
         if not isinstance(date, datetime.date):
