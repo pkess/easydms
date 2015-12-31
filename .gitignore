@@ -29,6 +29,7 @@
 # file patterns
 *.pyc
 *~
+*.swp
 
 # Project Specific patterns
 dist/*
