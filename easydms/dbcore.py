@@ -138,11 +138,16 @@ class Database(object):
         return ret
 
     def get_tag(self, tag):
-        """Get a tag with its alternative names from db"""
+        """Get a tag with its alternative names from db
+
+        return a documentTag or None if tag does not exist
+        """
         ret = documentTag()
         ret.primary = self.get_primary_tag(tag)
-        ret.alternatives = self.get_tag_alternatives(ret.primary)
-        print(ret)
+        if ret.primary is not None:
+            ret.alternatives = self.get_tag_alternatives(ret.primary)
+            return ret
+        return None
 
     def insert_document(self, path, date):
         """Insert a document to database"""
