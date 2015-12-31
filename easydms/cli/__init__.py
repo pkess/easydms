@@ -28,7 +28,7 @@ import os
 import sys
 from optparse import OptionParser
 import datetime
-from easydms.util.prompt import prompt_yn
+from easydms.util.prompt import prompt_yn, prompt_date
 import easydms.config
 import easydms.dbcore as dbcore
 
@@ -46,22 +46,21 @@ def print_usage_add():
 
 
 def add(db, docs):
+    """Add one or more documents to database"""
+    if isinstance(docs, str):
+        docs = [docs]
     for doc in docs:
-        query = "SELECT COUNT() FROM document WHERE path='{0}'".format(doc)
-        result = db.conn.execute(query)
-        count = result.fetchall()[0][0]
-        date = guess_document_date(doc)
-        if count == 0:
-            query = """INSERT INTO document (path, date) VALUES
-            ('{0}','{1}')""".format(doc, date.format())
-            print(query)
-            db.conn.execute(query)
-            db.conn.commit()
+        date = prompt_date("Date of document?", guess_document_date(doc))
+        db.insert_document(doc, date)
 
 
 def guess_document_date(doc):
-    ret = datetime.date(2015, 12, 29)
-    return ret
+    """Guess the date of a pdf document.
+    This will check the content of a pdf for a usable date in common format
+
+    Current implementation returns todays date.
+    """
+    return datetime.date.today()
 
 
 def subcommand_add(options, args, database):

@@ -26,7 +26,7 @@
 
 """Test core funtionalities."""
 
-from _common import TestCase, TestCaseCommandline
+from _common import testDataPath, TestCase, TestCaseCommandline
 import tempfile
 import os
 import sys
@@ -41,6 +41,12 @@ class TestConfig(TestCase):
         super(TestConfig, self).setUp()
         self.createConfigDir()
         self.io.install()
+
+    def _create_db(self):
+        """Create an empty db
+        """
+        self.db = easydms.dbcore.Database(":memory:")
+        self.db.create_db()
 
     def test_nonexisting_config(self):
         """Check behaviour of not existing configuration file"""
@@ -130,6 +136,26 @@ class TestConfig(TestCase):
         sys.argv = ["prog"]
         easydms.cli.main()
         self.assertExists(os.path.expanduser(dmsdir))
+
+    def test_add(self):
+        """Test add fo document to db"""
+        self._create_db()
+        doc = os.path.join(testDataPath, "simplepdf.pdf")
+        self.io.clear()
+        self.io.addinput('2015')
+        self.io.addinput('12')
+        self.io.addinput('31')
+        easydms.cli.add(self.db, doc)
+
+        docs = [doc, doc]
+        self.io.clear()
+        self.io.addinput('2015')
+        self.io.addinput('11')
+        self.io.addinput('15')
+        self.io.addinput('')
+        self.io.addinput('')
+        self.io.addinput('')
+        easydms.cli.add(self.db, docs)
 
 
 class TestConfigCmd(TestCaseCommandline):
