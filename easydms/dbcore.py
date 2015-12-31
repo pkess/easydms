@@ -32,6 +32,10 @@ class ErrorDatabaseStructure(Exception):
     """Existing database structure does not match programmed structure"""
 
 
+class ErrorDatabaseContent(Exception):
+    """Database is corrupted with wrong data"""
+
+
 class Database(object):
     """Central Database abstraction layer of easydms"""
     def __init__(self, path):
@@ -92,7 +96,10 @@ class Database(object):
 
     def get_primary_tag(self, tag):
         """Get the primary tag to be used as reference
-        in other tables from db"""
+        in other tables from db
+
+        returns None if key does not exist
+        """
         query = """SELECT * FROM
                        (SELECT tag.name as tagname,
                                tagalternative.name as tagalt
@@ -105,10 +112,15 @@ class Database(object):
                        )
                    WHERE tagalt = "{0}" """.format(tag)
         result = self.conn.execute(query)
-        tagname = result.fetchone()[0]
-        if len(result.fetchall()) > 0:
-            raise Exception()
-        return tagname
+        row = result.fetchone()
+        if row is not None:
+            tagname = row[0]
+            if len(result.fetchall()) > 0:
+                raise ErrorDatabaseContent("Tag '{0}' is defined "
+                                           "more than once but should "
+                                           "be unique".format(tag))
+            return tagname
+        return None
 
     def get_tag_alternatives(self, tag):
         """Get alternative names for tag from db"""
