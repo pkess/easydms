@@ -122,6 +122,13 @@ class Database(object):
             ret.append(res[0])
         return ret
 
+    def get_tag(self, tag):
+        """Get a tag with its alternative names from db"""
+        ret = documentTag()
+        ret.primary = self.get_primary_tag(tag)
+        ret.alternatives = self.get_tag_alternatives(ret.primary)
+        print(ret)
+
     def insert_document(self, path, date):
         """Insert a document to database"""
         if not isinstance(date, datetime.date):
@@ -132,3 +139,13 @@ class Database(object):
         print(query)
         self.conn.execute(query)
         self.conn.commit()
+
+
+class documentTag():
+    """Class to represent a tag"""
+    def __init__(self, primary=None, alternatives=None):
+        self.primary = primary
+        self.alternatives = alternatives
+
+    def __str__(self):
+        return "documentTag ({0}): {1}".format(self.primary, self.alternatives)
