@@ -123,7 +123,10 @@ class Database(object):
         return None
 
     def get_tag_alternatives(self, tag):
-        """Get alternative names for tag from db"""
+        """Get alternative names for tag from db
+
+        returns list of alternatives for tag
+        """
         query = """SELECT tagalternative.name as tagalt
                 FROM tagalternative INNER JOIN tag
                 ON tag.name = tagalternative.tag
