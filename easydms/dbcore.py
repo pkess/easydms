@@ -149,6 +149,29 @@ class Database(object):
             return ret
         return None
 
+    def insert_tag(self, tag, alternatives=[]):
+        """Insert a tag or alternative names for tag to database
+
+        return a documentTag for tag like get_tag would do
+        """
+        docTag = self.get_tag(tag)
+        if docTag is None:
+            query = """INSERT INTO tag (name) VALUES ('{0}')""".format(tag)
+            self.conn.execute(query)
+            docTag = documentTag()
+            docTag.primary = tag
+
+        for alt in alternatives:
+            if self.get_tag(alt) is not None:
+                raise Exception()
+            query = """INSERT INTO tagalternative (name, tag)
+                       VALUES ('{0}', '{1}')""".format(alt, docTag.primary)
+            self.conn.execute(query)
+            docTag.alternatives.append(alt)
+
+        self.conn.commit()
+        return docTag
+
     def insert_document(self, path, date):
         """Insert a document to database"""
         if not isinstance(date, datetime.date):
