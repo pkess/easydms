@@ -28,6 +28,8 @@
 
 from _common import TestCase
 
+import datetime
+
 import easydms.util.prompt
 import easydms.util.datetime
 
@@ -134,6 +136,45 @@ class TestUtilPrompt(TestCase):
                 self.io.addinput(inp)
             self.assertEqual(prompt_int(prompt, default, min, max),
                              result, msg=str(test))
+
+    def test_prompt_date(self):
+        """Test function to prompt a date from user"""
+        prompt_date = easydms.util.prompt.prompt_date
+        tests = [
+            # ( prompt
+            #   default,
+            #   input,
+            #   result
+            ('prompt',
+             datetime.date(2015, 12, 31),
+             ['', '', ''],
+             datetime.date(2015, 12, 31)),
+            ('prompt',
+             datetime.date(2016, 2, 29),
+             ['2015', '', ''],
+             datetime.date(2015, 2, 28)),
+            ('prompt',
+             datetime.date(2015, 12, 31),
+             ['', '11', '30'],
+             datetime.date(2015, 11, 30)),
+            ('prompt',
+             None,
+             ['2000', '1', '1'],
+             datetime.date(2000, 1, 1)),
+        ]
+        for test in tests:
+            prompt = test[0]
+            default = test[1]
+            inp = test[2]
+            result = test[3]
+            self.io.clear()
+            for inp in inp:
+                self.io.addinput(inp)
+            self.assertEqual(prompt_date(prompt, default),
+                             result, msg=str(test))
+
+        with self.assertRaises(TypeError):
+            prompt_date('', "2015-5-5")
 
 
 class TestUtilDatetime(TestCase):

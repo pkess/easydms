@@ -25,6 +25,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 import sys
+import datetime
+from easydms.util.datetime import days_in_month
 
 
 def prompt_yn(prompt, require=False):
@@ -76,3 +78,29 @@ def prompt_int(prompt, default=None, min=None, max=None):
             return prompt_int(prompt, int(newGuess), min, max)
         except ValueError:
             return prompt_int(prompt, default, min, max)
+
+
+def prompt_date(prompt, default=None):
+    if default is None:
+        default = datetime.date.today()
+    if not isinstance(default, datetime.date):
+        raise TypeError("default should be of type datetime.date"
+                        ", {0} given".format(type(default)))
+    date = default
+    sys.stdout.write(prompt)
+    sys.stdout.write('\n')
+    year = prompt_int('Year?', date.year,
+                      min=datetime.MINYEAR, max=datetime.MAXYEAR)
+    maxdays = days_in_month(year, date.month)
+    if date.day > maxdays:
+        date = date.replace(day=maxdays)
+    date = date.replace(year=year)
+    month = prompt_int('Month?', date.month, min=1, max=12)
+    maxdays = days_in_month(date.year, month)
+    if date.day > maxdays:
+        date = date.replace(day=maxdays)
+    date = date.replace(month=month)
+    day = prompt_int('Day?', date.day, min=1,
+                     max=days_in_month(date.year, date.month))
+    date = date.replace(day=day)
+    return date
