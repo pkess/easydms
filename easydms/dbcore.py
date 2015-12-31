@@ -90,6 +90,26 @@ class Database(object):
         """Add defined number of columns to a table"""
         raise Exception("Not implemented: extend db")
 
+    def get_primary_tag(self, tag):
+        """Get the primary tag to be used as reference
+        in other tables from db"""
+        query = """SELECT * FROM
+                       (SELECT tag.name as tagname,
+                               tagalternative.name as tagalt
+                        FROM tagalternative INNER JOIN tag
+                        ON tag.name = tagalternative.tag
+                        UNION
+                        SELECT tag.name as tagname, tag.name as tagalt
+                        FROM tag
+                        WHERE tagalt = "{0}"
+                       )
+                   WHERE tagalt = "{0}" """.format(tag)
+        result = self.conn.execute(query)
+        tagname = result.fetchone()[0]
+        if len(result.fetchall()) > 0:
+            raise Exception()
+        return tagname
+
     def insert_document(self, path, date):
         """Insert a document to database"""
         if not isinstance(date, datetime.date):
