@@ -99,6 +99,9 @@ class TestDatabase(TestCase):
         self.assertEqual(alt, ["Rechnung"])
         alt = self.db.get_tag_alternatives("Inv")
         self.assertEqual(alt, [])
+        # Just to improve coverage:
+        doctag = self.db.get_tag("Rechnung")
+        str(doctag)
 
         with self.assertRaises(easydms.dbcore.ErrorDatabaseInsert):
             self.db.insert_tag("Letter", ["Rechnung"])
