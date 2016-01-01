@@ -192,7 +192,7 @@ class Database(object):
 
 class documentTag():
     """Class to represent a tag"""
-    def __init__(self, primary=None, alternatives=None):
+    def __init__(self, primary=None, alternatives=[]):
         self.primary = primary
         self.alternatives = alternatives
 
