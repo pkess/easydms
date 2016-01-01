@@ -90,3 +90,16 @@ class TestDatabase(TestCase):
         self.db.insert_document(doc, date)
         with self.assertRaises(TypeError):
             self.db.insert_document(doc, "Test")
+
+    def test_tags(self):
+        self.test_create_db_memory()
+        self.db.insert_tag("Letter")
+        self.db.insert_tag("Invoice", ["Rechnung"])
+        alt = self.db.get_tag_alternatives("Invoice")
+        self.assertEqual(alt, ["Rechnung"])
+
+        query = """INSERT INTO tagalternative (name, tag)
+                   VALUES ('{0}', '{1}')""".format("Invoice", "Letter")
+        self.db.conn.execute(query)
+        with self.assertRaises(easydms.dbcore.ErrorDatabaseContent):
+            self.db.get_primary_tag("Invoice")
