@@ -97,6 +97,11 @@ class TestDatabase(TestCase):
         self.db.insert_tag("Invoice", ["Rechnung"])
         alt = self.db.get_tag_alternatives("Invoice")
         self.assertEqual(alt, ["Rechnung"])
+        alt = self.db.get_tag_alternatives("Inv")
+        self.assertEqual(alt, [])
+
+        with self.assertRaises(easydms.dbcore.ErrorDatabaseInsert):
+            self.db.insert_tag("Letter", ["Rechnung"])
 
         query = """INSERT INTO tagalternative (name, tag)
                    VALUES ('{0}', '{1}')""".format("Invoice", "Letter")
