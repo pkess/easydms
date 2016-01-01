@@ -168,8 +168,8 @@ class Database(object):
         for alt in alternatives:
             if self.get_tag(alt) is not None:
                 raise ErrorDatabaseInsert("Cannot insert alternative name "
-				          "'{0}'. Tag already "
-					  "defined".format(alt))
+                                          "'{0}'. Tag already "
+                                          "defined".format(alt))
             query = """INSERT INTO tagalternative (name, tag)
                        VALUES ('{0}', '{1}')""".format(alt, docTag.primary)
             self.conn.execute(query)
