@@ -36,6 +36,10 @@ class ErrorDatabaseContent(Exception):
     """Database is corrupted with wrong data"""
 
 
+class ErrorDatabaseInsert(Exception):
+    """Unable to insert into db"""
+
+
 class Database(object):
     """Central Database abstraction layer of easydms"""
     def __init__(self, path):
@@ -163,7 +167,9 @@ class Database(object):
 
         for alt in alternatives:
             if self.get_tag(alt) is not None:
-                raise Exception()
+                raise ErrorDatabaseInsert("Cannot insert alternative name "
+				          "'{0}'. Tag already "
+					  "defined".format(alt))
             query = """INSERT INTO tagalternative (name, tag)
                        VALUES ('{0}', '{1}')""".format(alt, docTag.primary)
             self.conn.execute(query)
