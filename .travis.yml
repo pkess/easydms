@@ -34,9 +34,10 @@ env:
 
 # dependencies
 install:
-    - pip3 install tox
-    - pip3 install codecov
-    - pip3 list
+    - pip install tox
+    - pip install codecov
+    - pip install argparse
+    - pip list
 
 script: tox -e $TOX_ENV
 
