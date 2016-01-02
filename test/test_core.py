@@ -48,6 +48,17 @@ class TestConfig(TestCase):
         self.db = easydms.dbcore.Database(":memory:")
         self.db.create_db()
 
+    def _create_config(self):
+        self.dmsdir = os.path.expanduser('~/documents/dms')
+        configfilePath = os.path.expanduser("~/.config/easydms.yaml")
+        configfile = open(configfilePath, mode="w")
+        configfile.write('library: easydms.db\n')
+        configfile.write('directory: {0}\n'.format(self.dmsdir))
+        configfile.close()
+
+    def _create_dmsdir(self):
+        os.makedirs(self.dmsdir)
+
     def test_nonexisting_config(self):
         """Check behaviour of not existing configuration file"""
         try:
@@ -117,37 +128,33 @@ class TestConfig(TestCase):
             os.remove(tempconfig.name)
 
     def test_create_dir(self):
-        dmsdir = '~/documents/dms'
-        configfilePath = os.path.expanduser("~/.config/easydms.yaml")
-        configfile = open(configfilePath, mode="w")
-        configfile.write('library: easydms.db\n')
-        configfile.write('directory: {0}\n'.format(dmsdir))
-        configfile.close()
-
+        self._create_config()
         with self.assertRaises(SystemExit):
             self.io.addinput("n")
             sys.argv = ["prog"]
             easydms.cli.main()
-        self.assertNotExists(os.path.expanduser(dmsdir))
+        self.assertNotExists(os.path.expanduser(self.dmsdir))
         self.io.addinput("y")
         sys.argv = ["prog"]
         easydms.cli.main()
-        self.assertExists(os.path.expanduser(dmsdir))
+        self.assertExists(os.path.expanduser(self.dmsdir))
         sys.argv = ["prog"]
         easydms.cli.main()
-        self.assertExists(os.path.expanduser(dmsdir))
+        self.assertExists(os.path.expanduser(self.dmsdir))
 
     def test_add(self):
         """Test add fo document to db"""
         self._create_db()
+        self._create_config()
+        self._create_dmsdir()
         doc = os.path.join(testDataPath, "simplepdf.pdf")
         self.io.clear()
         self.io.addinput('2015')
         self.io.addinput('12')
         self.io.addinput('31')
-        easydms.cli.add(self.db, doc)
+        sys.argv = ["prog", "add", doc]
+        easydms.cli.main()
 
-        docs = [doc, doc]
         self.io.clear()
         self.io.addinput('2015')
         self.io.addinput('11')
@@ -155,7 +162,7 @@ class TestConfig(TestCase):
         self.io.addinput('')
         self.io.addinput('')
         self.io.addinput('')
-        easydms.cli.add(self.db, docs)
+        easydms.cli.main()
 
 
 class TestConfigCmd(TestCaseCommandline):

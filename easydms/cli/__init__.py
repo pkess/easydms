@@ -30,7 +30,7 @@ from easydms.util.prompt import prompt_yn
 import easydms.config
 import easydms.dbcore as dbcore
 
-from easydms.cli.Subcommands import parser
+from easydms.cli.subcommands import parser
 
 
 def main():
