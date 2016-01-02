@@ -36,6 +36,7 @@ env:
 install:
     - pip install tox
     - pip install codecov
+    - pip list
 
 script: tox -e $TOX_ENV
 
