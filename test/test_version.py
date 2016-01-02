@@ -43,7 +43,7 @@ class TestVersion(TestCase):
         sys.argv = [sys.argv[0], "--version"]
         with self.assertRaises(SystemExit) as cm:
             easydms.cli.main()
-        self.assertEqual(cm.exception.code, 0)
+        self.assertEqual(cm.exception.code, None)
 
 
 class TestVersionCmd(TestCaseCommandline):
