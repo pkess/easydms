@@ -43,7 +43,6 @@ def main():
         if args.configCmd is not None:
             args.configCmd(config, args)
 
-        raise Exception(sys.argv)
         dmsdirectory = config.getRequiredKey('directory')
         dmsdirectory = os.path.expanduser(dmsdirectory)
         if not os.path.exists(dmsdirectory):
@@ -54,6 +53,7 @@ def main():
                 os.makedirs(dmsdirectory)
             else:
                 sys.exit("Abort due to not existing directory")
+        raise Exception(sys.argv)
 
         dbpath = os.path.join(dmsdirectory,
                               config.getRequiredKey('library'))
