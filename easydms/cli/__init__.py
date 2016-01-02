@@ -39,6 +39,7 @@ def main():
         args.rawCmd(args)
 
     try:
+        raise Exception(sys.argv)
         config = easydms.config.Config(args.config)
         if args.configCmd is not None:
             args.configCmd(config, args)
