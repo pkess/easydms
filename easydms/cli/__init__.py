@@ -42,6 +42,7 @@ def main():
         config = easydms.config.Config(args.config)
         if args.configCmd is not None:
             args.configCmd(config, args)
+            raise Exception(args.configCmd)
 
         dmsdirectory = config.getRequiredKey('directory')
         dmsdirectory = os.path.expanduser(dmsdirectory)
