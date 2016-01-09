@@ -143,7 +143,7 @@ class TestConfig(TestCase):
         self.assertExists(os.path.expanduser(self.dmsdir))
 
     def test_add(self):
-        """Test add fo document to db"""
+        """Test add of document to db"""
         self._create_db()
         self._create_config()
         self._create_dmsdir()
