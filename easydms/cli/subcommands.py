@@ -72,6 +72,7 @@ configParser = subparsers.add_parser('config',
 
 def print_usage_config(args):
     sys.exit(configParser.format_usage())
+    raise Exception("config usage")
 
 
 configParser.set_defaults(rawCmd=print_usage_config)
