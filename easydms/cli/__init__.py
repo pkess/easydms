@@ -34,7 +34,7 @@ from easydms.cli.subcommands import parser
 
 
 def main():
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv)
     if args.rawCmd is not None:
         args.rawCmd(args)
 
