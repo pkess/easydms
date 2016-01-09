@@ -83,7 +83,7 @@ class TestConfig(TestCase):
     def test_dump_config_main(self):
         """Check dump of config from main with argparse"""
         self.io.stdout.clear()
-        sys.argv = ["prog", "config", "dump"]
+        sys.argv = [u"prog", u"config", u"dump"]
         with self.assertRaises(SystemExit):
             easydms.cli.main()
 
