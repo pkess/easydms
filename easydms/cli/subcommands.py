@@ -100,6 +100,7 @@ configEditParser = configSubparsers.add_parser(
 
 def configEditCmd(config, args=None):
     print(config)
+    raise Exception("config Edit")
     sys.exit()
 configEditParser.set_defaults(rawCmd=None)
 configEditParser.set_defaults(configCmd=configEditCmd)
@@ -111,7 +112,6 @@ addParser = subparsers.add_parser('add',
                                   help='add document to database')
 addParserFile = addParser.add_argument('files', nargs='+',
                                        help='files to add')
-raise Exception("add")
 
 def addCmd(config, db, args):
     """Add one or more documents to database"""
