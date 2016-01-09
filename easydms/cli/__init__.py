@@ -40,7 +40,7 @@ def main():
 
     try:
         config = easydms.config.Config(args.config)
-        raise Exception(args.configCmd)
+        raise Exception(args)
         if args.configCmd is not None:
             args.configCmd(config, args)
 
