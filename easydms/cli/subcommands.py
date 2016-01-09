@@ -87,6 +87,7 @@ configDumpParser = configSubparsers.add_parser(
 
 def configDumpCmd(config, args=None):
     print(config)
+    raise Exception("config dump")
     sys.exit()
 configDumpParser.set_defaults(rawCmd=None)
 configDumpParser.set_defaults(configCmd=configDumpCmd)
@@ -112,6 +113,7 @@ addParser = subparsers.add_parser('add',
                                   help='add document to database')
 addParserFile = addParser.add_argument('files', nargs='+',
                                        help='files to add')
+
 
 def addCmd(config, db, args):
     """Add one or more documents to database"""
