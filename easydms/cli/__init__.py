@@ -53,7 +53,6 @@ def main():
                 os.makedirs(dmsdirectory)
             else:
                 sys.exit("Abort due to not existing directory")
-        raise Exception(sys.argv)
 
         dbpath = os.path.join(dmsdirectory,
                               config.getRequiredKey('library'))
