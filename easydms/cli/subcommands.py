@@ -26,10 +26,9 @@
 
 import sys
 import argparse
-import datetime
 
 from easydms.util.prompt import prompt_date
-
+from easydms.document import document
 
 parser = argparse.ArgumentParser(prog="easydms")
 # Execute function without configuration or db
@@ -115,18 +114,11 @@ addParserFile = addParser.add_argument('files', nargs='+',
 
 def addCmd(config, db, args):
     """Add one or more documents to database"""
-    for doc in args.files:
-        date = prompt_date("Date of document?", guess_document_date(doc))
-        db.insert_document(doc, date)
-
-
-def guess_document_date(doc):
-    """Guess the date of a pdf document.
-    This will check the content of a pdf for a usable date in common format
-
-    Current implementation returns todays date.
-    """
-    return datetime.date.today()
+    for file in args.files:
+        doc = document(file)
+        date = prompt_date("Date of document?", doc.guess_document_date())
+        doc.date = date
+        db.insert_document(doc)
 
 
 addParser.set_defaults(rawCmd=None)

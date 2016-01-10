@@ -24,5 +24,36 @@
 #
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
-from easydms.document import document
-assert document
+import datetime
+
+
+class document(object):
+    """Representation of a document"""
+    def __init__(self, path=None, date=None):
+        self.path = path
+        if date is not None:
+            self.date = date
+        else:
+            self.__date = None
+
+    def __del__(self):
+        pass
+
+    @property
+    def date(self):
+        return self.__date
+
+    @date.setter
+    def date(self, date):
+        if not isinstance(date, datetime.date):
+            raise TypeError("date should be of type datetime.date"
+                            ", {0} given".format(type(date)))
+        self.__date = date
+
+    def guess_document_date(doc):
+        """Guess the date of this document.
+        This will check the content of a pdf for a usable date in common format
+
+        Current implementation returns todays date.
+        """
+        return datetime.date.today()

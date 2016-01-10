@@ -25,7 +25,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 import sqlite3
-import datetime
+
+import easydms
 
 
 class ErrorDatabaseStructure(Exception):
@@ -178,14 +179,14 @@ class Database(object):
         self.conn.commit()
         return docTag
 
-    def insert_document(self, path, date):
+    def insert_document(self, doc):
         """Insert a document to database"""
-        if not isinstance(date, datetime.date):
-            raise TypeError("date should be of type datetime.date"
-                            ", {0} given".format(type(date)))
+        if not isinstance(doc, easydms.document):
+            raise TypeError("doc should be of type easydms.document"
+                            ", {0} given".format(type(doc)))
+
         query = """INSERT INTO document (path, date) VALUES
-        ('{0}','{1}')""".format(path, str(date))
-        print(query)
+        ('{0}','{1}')""".format(doc.path, str(doc.date))
         self.conn.execute(query)
         self.conn.commit()
 

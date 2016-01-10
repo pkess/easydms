@@ -32,6 +32,7 @@ import os
 import datetime
 
 import easydms.dbcore
+import easydms
 
 
 class TestDatabase(TestCase):
@@ -86,8 +87,9 @@ class TestDatabase(TestCase):
     def test_add(self):
         self.test_create_db_memory()
         date = datetime.date(2015, 12, 30)
-        doc = os.path.join(testDataPath, 'simplepdf.pdf')
-        self.db.insert_document(doc, date)
+        path = os.path.join(testDataPath, 'simplepdf.pdf')
+        doc = easydms.document(path, date)
+        self.db.insert_document(doc)
         with self.assertRaises(TypeError):
             self.db.insert_document(doc, "Test")
 
