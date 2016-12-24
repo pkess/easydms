@@ -24,36 +24,36 @@
 #
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
-import datetime
+import os
+import sys
+import easydms.config
+
+def main():
+    try:
+        config = easydms.config.Config(args.config)
+        if args.configCmd is not None:
+            args.configCmd(config, args)
+
+        dmsdirectory = config.getRequiredKey('directory')
+        dmsdirectory = os.path.expanduser(dmsdirectory)
+        if not os.path.exists(dmsdirectory):
+            create = prompt_yn(
+                "Directory \"{0}\" does not exist. Create?".format(
+                    dmsdirectory))
+            if create:
+                os.makedirs(dmsdirectory)
+            else:
+                sys.exit("Abort due to not existing directory")
+
+        if args.cmd is not None:
+            args.cmd(config, db, args)
+
+    except easydms.config.ErrorNoConfiguration as e:
+        msg = ("Error: Could not load configuration\n"
+               "following path(s) were searched:\n"
+               "{0}").format(e)
+        sys.exit(msg)
 
 
-class document(object):
-    """Representation of a document"""
-    def __init__(self, path=None, date=None):
-        self.path = path
-        if date is not None:
-            self.date = date
-        else:
-            self.__date = None
-
-    def __del__(self):
-        pass
-
-    @property
-    def date(self):
-        return self.__date
-
-    @date.setter
-    def date(self, date):
-        if not isinstance(date, datetime.date):
-            raise TypeError("date should be of type datetime.date"
-                            ", {0} given".format(type(date)))
-        self.__date = date
-
-    def guess_document_date(doc):
-        """Guess the date of this document.
-        This will check the content of a pdf for a usable date in common format
-
-        Current implementation returns todays date.
-        """
-        return datetime.date.today()
+if __name__ == '__main__':
+    main()

@@ -24,5 +24,3 @@
 #
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
-from easydms.document import document
-assert document
