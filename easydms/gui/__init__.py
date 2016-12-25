@@ -27,13 +27,36 @@
 import os
 import sys
 import easydms.config
-from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QMessageBox,
+    QFormLayout, QHBoxLayout, QPushButton,
+)
+
+
+class mainWidget(QWidget):
+    def __init__(self):
+        super(mainWidget, self).__init__()
+        layout = QHBoxLayout(self)
+        self.setLayout(layout)
+        self.layLeftPane = QFormLayout()
+
+        self.wdgViewer = QWidget()
+        self.wdgViewer.setMinimumSize(200, 200)
+        self.wdgLeftPane = QWidget()
+        self.wdgLeftPane.setMaximumWidth(200)
+        self.wdgLeftPane.setLayout(self.layLeftPane)
+        layout.addWidget(self.wdgLeftPane)
+        layout.addWidget(self.wdgViewer)
+        self.btnButton1 = QPushButton("Hallo Welt1")
+        self.btnButton2 = QPushButton("Hallo Welt2")
+        self.layLeftPane.addWidget(self.btnButton1)
+        self.layLeftPane.addWidget(self.btnButton2)
 
 
 def main():
     try:
         a = QApplication(sys.argv)
-        w = QWidget()
+        w = mainWidget()
         w.show()
 
         config = easydms.config.Config()
