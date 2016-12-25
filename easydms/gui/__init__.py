@@ -27,9 +27,13 @@
 import os
 import sys
 import easydms.config
+from PyQt5.QtCore import (
+    QDate,
+)
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QMessageBox,
     QFormLayout, QHBoxLayout, QPushButton,
+    QLineEdit, QDateEdit,
 )
 
 
@@ -47,10 +51,15 @@ class mainWidget(QWidget):
         self.wdgLeftPane.setLayout(self.layLeftPane)
         layout.addWidget(self.wdgLeftPane)
         layout.addWidget(self.wdgViewer)
-        self.btnButton1 = QPushButton("Hallo Welt1")
-        self.btnButton2 = QPushButton("Hallo Welt2")
-        self.layLeftPane.addWidget(self.btnButton1)
-        self.layLeftPane.addWidget(self.btnButton2)
+        self.btnLoadDoc = QPushButton(self.tr("Load document"))
+        self.inpCompanyName = QLineEdit()
+        self.inpDate = QDateEdit()
+        self.inpDate.setDate(QDate.currentDate())
+        self.btnStoreDoc = QPushButton(self.tr("Store document"))
+        self.layLeftPane.addRow(self.btnLoadDoc)
+        self.layLeftPane.addRow(self.tr("Company Name"), self.inpCompanyName)
+        self.layLeftPane.addRow(self.tr("Date"), self.inpDate)
+        self.layLeftPane.addRow(self.btnStoreDoc)
 
 
 def main():
