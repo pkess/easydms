@@ -29,6 +29,7 @@ import sys
 import easydms.config
 from PyQt5.QtCore import (
     QDate,
+    QDir,
 )
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QMessageBox,
@@ -66,8 +67,15 @@ class mainWidget(QWidget):
         self.layLeftPane.addRow(self.btnStoreDoc)
 
     def loadDoc(self):
+        defaultDir = self.config.getKey('default_import_dir', None)
+        if defaultDir:
+            defaultDir = os.path.expanduser(defaultDir)
+        else:
+            defaultDir = QDir.homePath()
+
         (filepath, filt) = QFileDialog.getOpenFileName(
             caption=self.tr("Load document"),
+            directory=defaultDir,
             filter=self.tr("Documents (*.pdf)")
         )
         if filepath:
