@@ -39,13 +39,14 @@ from .pdfViewerWidget import pdfViewerWidget
 
 
 class mainWidget(QWidget):
-    def __init__(self):
+    def __init__(self, config):
         super(mainWidget, self).__init__()
+        self.config = config
         layout = QHBoxLayout(self)
         self.setLayout(layout)
         self.layLeftPane = QFormLayout()
 
-        self.wdgViewer = pdfViewerWidget()
+        self.wdgViewer = pdfViewerWidget(self.config)
         self.wdgViewer.setMinimumSize(200, 200)
         self.wdgLeftPane = QWidget()
         self.wdgLeftPane.setMaximumWidth(200)
@@ -78,11 +79,11 @@ class mainWidget(QWidget):
 
 def main():
     try:
-        a = QApplication(sys.argv)
-        w = mainWidget()
-        w.show()
-
         config = easydms.config.Config()
+
+        a = QApplication(sys.argv)
+        w = mainWidget(config)
+        w.show()
 
         dmsdirectory = config.getRequiredKey('directory')
         dmsdirectory = os.path.expanduser(dmsdirectory)

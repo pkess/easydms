@@ -26,12 +26,43 @@
 
 from PyQt5.QtWidgets import (
     QWidget,
+    QPushButton,
+    QHBoxLayout,
 )
+from PyQt5.QtCore import (
+    QUrl,
+)
+from PyQt5.QtGui import (
+    QDesktopServices,
+)
+import subprocess
 
 
 class pdfViewerWidget(QWidget):
-    def __init__(self):
+    def __init__(self, config):
         super(pdfViewerWidget, self).__init__()
+        self.config = config
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+        self.btnOpenPdf = QPushButton(
+            self.tr("Open PDF with external application"),
+        )
+        layout.addStretch()
+        layout.addWidget(self.btnOpenPdf)
+        layout.addStretch()
+        self.filePath = ""
+        self.btnOpenPdf.setEnabled(False)
+        self.btnOpenPdf.clicked.connect(self.openFileExternal)
 
-    def setFile(self, filepath):
-        print(filepath)
+    def setFile(self, filePath):
+        self.filePath = filePath
+        self.btnOpenPdf.setEnabled(True)
+
+    def openFileExternal(self):
+        pdfViewer = self.config.getKey('pdfViewer', None)
+        if pdfViewer:
+            subprocess.Popen([pdfViewer, self.filePath])
+        else:
+            QDesktopServices.openUrl(
+                QUrl("file:///{0}".format(self.filePath))
+            )
