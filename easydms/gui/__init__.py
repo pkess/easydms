@@ -33,8 +33,9 @@ from PyQt5.QtCore import (
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QMessageBox,
     QFormLayout, QHBoxLayout, QPushButton,
-    QLineEdit, QDateEdit,
+    QLineEdit, QDateEdit, QFileDialog
 )
+from .pdfViewerWidget import pdfViewerWidget
 
 
 class mainWidget(QWidget):
@@ -44,7 +45,7 @@ class mainWidget(QWidget):
         self.setLayout(layout)
         self.layLeftPane = QFormLayout()
 
-        self.wdgViewer = QWidget()
+        self.wdgViewer = pdfViewerWidget()
         self.wdgViewer.setMinimumSize(200, 200)
         self.wdgLeftPane = QWidget()
         self.wdgLeftPane.setMaximumWidth(200)
@@ -52,14 +53,27 @@ class mainWidget(QWidget):
         layout.addWidget(self.wdgLeftPane)
         layout.addWidget(self.wdgViewer)
         self.btnLoadDoc = QPushButton(self.tr("Load document"))
+        self.btnLoadDoc.clicked.connect(self.loadDoc)
         self.inpCompanyName = QLineEdit()
         self.inpDate = QDateEdit()
         self.inpDate.setDate(QDate.currentDate())
         self.btnStoreDoc = QPushButton(self.tr("Store document"))
+        self.btnStoreDoc.clicked.connect(self.storeDoc)
         self.layLeftPane.addRow(self.btnLoadDoc)
         self.layLeftPane.addRow(self.tr("Company Name"), self.inpCompanyName)
         self.layLeftPane.addRow(self.tr("Date"), self.inpDate)
         self.layLeftPane.addRow(self.btnStoreDoc)
+
+    def loadDoc(self):
+        (filepath, filt) = QFileDialog.getOpenFileName(
+            caption=self.tr("Load document"),
+            filter=self.tr("Documents (*.pdf)")
+        )
+        if filepath:
+            self.wdgViewer.setFile(filepath)
+
+    def storeDoc(self):
+        pass
 
 
 def main():
