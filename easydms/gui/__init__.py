@@ -27,26 +27,31 @@
 import os
 import sys
 import easydms.config
+from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
+
 
 def main():
     try:
-        config = easydms.config.Config(args.config)
-        if args.configCmd is not None:
-            args.configCmd(config, args)
+        a = QApplication(sys.argv)
+        w = QWidget()
+        w.show()
+
+        config = easydms.config.Config()
 
         dmsdirectory = config.getRequiredKey('directory')
         dmsdirectory = os.path.expanduser(dmsdirectory)
         if not os.path.exists(dmsdirectory):
-            create = prompt_yn(
+            reply = QMessageBox.question(
+                w, "easydms",
                 "Directory \"{0}\" does not exist. Create?".format(
-                    dmsdirectory))
-            if create:
+                    dmsdirectory),
+                defaultButton=QMessageBox.Yes)
+            if reply == QMessageBox.Yes:
                 os.makedirs(dmsdirectory)
             else:
                 sys.exit("Abort due to not existing directory")
 
-        if args.cmd is not None:
-            args.cmd(config, db, args)
+        sys.exit(a.exec_())
 
     except easydms.config.ErrorNoConfiguration as e:
         msg = ("Error: Could not load configuration\n"

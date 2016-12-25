@@ -23,4 +23,3 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-

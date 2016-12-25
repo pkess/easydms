@@ -48,12 +48,15 @@ setup(
     packages=[
         'easydms',
         'easydms.cli',
-        'easydms.util',
+        'easydms.gui',
     ],
 
     entry_points={
         'console_scripts': [
             'easydms = easydms.cli:main',
+        ],
+        'gui_scripts': [
+            'easydms_gui = easydms.gui:main',
         ],
     },
 

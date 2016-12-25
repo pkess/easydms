@@ -87,6 +87,8 @@ configDumpParser = configSubparsers.add_parser(
 def configDumpCmd(config, args=None):
     print(config)
     sys.exit()
+
+
 configDumpParser.set_defaults(rawCmd=None)
 configDumpParser.set_defaults(configCmd=configDumpCmd)
 
@@ -100,6 +102,8 @@ configEditParser = configSubparsers.add_parser(
 def configEditCmd(config, args=None):
     print(config)
     sys.exit()
+
+
 configEditParser.set_defaults(rawCmd=None)
 configEditParser.set_defaults(configCmd=configEditCmd)
 
