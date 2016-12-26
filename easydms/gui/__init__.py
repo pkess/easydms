@@ -37,6 +37,7 @@ from PyQt5.QtWidgets import (
     QLineEdit, QDateEdit, QFileDialog
 )
 from .pdfViewerWidget import pdfViewerWidget
+from .. import ocrmypdfwrapper
 
 
 class mainWidget(QWidget):
@@ -79,7 +80,16 @@ class mainWidget(QWidget):
             filter=self.tr("Documents (*.pdf)")
         )
         if filepath:
+            self.ocrDoc(filepath)
+
+    def ocrDoc(self, filepath):
+        try:
+            newName = ocrmypdfwrapper.ocr(filepath)
+            print(newName)
             self.wdgViewer.setFile(filepath)
+        except:
+            print("Error during ocr")
+            print(sys.exc_info())
 
     def storeDoc(self):
         pass
