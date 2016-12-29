@@ -28,8 +28,11 @@ import os
 import sys
 import easydms.config
 from PyQt5.QtCore import (
+    Qt,
     QDate,
     QDir,
+    QThread,
+    QObject, pyqtSignal, pyqtSlot,
 )
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QMessageBox,
@@ -41,8 +44,21 @@ from .. import ocrmypdfwrapper
 
 
 class mainWidget(QWidget):
+    procOcr = None
+    fileToOcr = pyqtSignal(str)
+
     def __init__(self, config):
         super(mainWidget, self).__init__()
+
+        if not mainWidget.procOcr:
+            mainWidget.procOcr = QThread(self)
+            mainWidget.procOcr.start()
+
+        self.ocrW = ocrWorker()
+        self.fileToOcr.connect(self.ocrW.do, Qt.QueuedConnection)
+        self.ocrW.finished.connect(self.ocrFinished)
+        self.ocrW.moveToThread(self.procOcr)
+
         self.config = config
         layout = QHBoxLayout(self)
         self.setLayout(layout)
@@ -84,15 +100,31 @@ class mainWidget(QWidget):
 
     def ocrDoc(self, filepath):
         try:
-            newName = ocrmypdfwrapper.ocr(filepath)
-            print(newName)
+            self.btnLoadDoc.setEnabled(False)
+            self.fileToOcr.emit(filepath)
             self.wdgViewer.setFile(filepath)
         except:
             print("Error during ocr")
             print(sys.exc_info())
 
+    def ocrFinished(self, newFilename):
+        self.btnLoadDoc.setEnabled(True)
+        print(newFilename)
+
     def storeDoc(self):
         pass
+
+
+class ocrWorker(QObject):
+    finished = pyqtSignal(str)
+
+    def __init__(self):
+        super(ocrWorker, self).__init__()
+
+    @pyqtSlot(str)
+    def do(self, filepath):
+        newName = ocrmypdfwrapper.ocr(filepath)
+        self.finished.emit(newName)
 
 
 def main():
