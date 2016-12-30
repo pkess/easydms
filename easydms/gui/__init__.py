@@ -25,6 +25,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 import os
+import shutil
 import sys
 import easydms.config
 from PyQt5.QtCore import (
@@ -52,6 +53,7 @@ class mainWidget(QWidget):
 
     def __init__(self, config):
         super(mainWidget, self).__init__()
+        self.dmsDirectory = ""
 
         if not mainWidget.procOcr:
             mainWidget.procOcr = QThread(self)
@@ -104,6 +106,7 @@ class mainWidget(QWidget):
         )
         if filepath:
             self.ocrDoc(filepath)
+            self.origFilePath = filepath
 
     def ocrDoc(self, filepath):
         try:
@@ -124,9 +127,47 @@ class mainWidget(QWidget):
         self.lblOcrProgress.setStyleSheet(self.styleLblOCRfinished)
         self.lblOcrProgress.setText(self.tr("OCR finished"))
         self.ocrFileName = newFilename
+        self.wdgViewer.setFile(self.ocrFileName)
 
     def storeDoc(self):
-        pass
+        self.btnStoreDoc.setEnabled(False)
+        if not self.ocrFileName:
+            pass
+        compName = self.inpCompanyName.text()
+        if self.dmsDirectory == "":
+            pass
+        if compName == "":
+            pass
+        date = self.inpDate.date()
+        year = date.year()
+        month = date.month()
+        day = date.day()
+        nr = 1
+        while True:
+            path = os.path.join(
+                self.dmsDirectory,
+                "{:04d}".format(year),
+                compName
+            )
+            newFileName = os.path.join(
+                path,
+                "{0:04d}-{1:02d}-{2:02d}_{3:03d}.pdf".format(
+                    year, month, day, nr
+                )
+            )
+            if os.path.exists(newFileName):
+                nr = nr + 1
+                continue
+            break
+        os.makedirs(path, exist_ok=True)
+        shutil.copyfile(self.ocrFileName, newFileName)
+        os.remove(self.ocrFileName)
+        os.remove(self.origFilePath)
+        self.ocrFileName = ""
+        self.origFilePath = ""
+
+    def setDmsDirectory(self, path):
+        self.dmsDirectory = path
 
 
 class ocrWorker(QObject):
@@ -161,6 +202,7 @@ def main():
                 os.makedirs(dmsdirectory)
             else:
                 sys.exit("Abort due to not existing directory")
+        w.setDmsDirectory(dmsdirectory)
 
         sys.exit(a.exec_())
 
