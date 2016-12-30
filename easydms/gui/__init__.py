@@ -37,7 +37,8 @@ from PyQt5.QtCore import (
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QMessageBox,
     QFormLayout, QHBoxLayout, QPushButton,
-    QLineEdit, QDateEdit, QFileDialog
+    QLineEdit, QDateEdit, QFileDialog,
+    QLabel,
 )
 from .pdfViewerWidget import pdfViewerWidget
 from .. import ocrmypdfwrapper
@@ -46,6 +47,8 @@ from .. import ocrmypdfwrapper
 class mainWidget(QWidget):
     procOcr = None
     fileToOcr = pyqtSignal(str)
+    styleLblOCRrunning = "background: yellow"
+    styleLblOCRfinished = "background: green"
 
     def __init__(self, config):
         super(mainWidget, self).__init__()
@@ -78,10 +81,14 @@ class mainWidget(QWidget):
         self.inpDate.setDate(QDate.currentDate())
         self.btnStoreDoc = QPushButton(self.tr("Store document"))
         self.btnStoreDoc.clicked.connect(self.storeDoc)
+        self.btnStoreDoc.setEnabled(False)
+        self.lblOcrProgress = QLabel(self.tr("OCR not started"))
+        self.lblOcrProgress.setAlignment(Qt.AlignCenter)
         self.layLeftPane.addRow(self.btnLoadDoc)
         self.layLeftPane.addRow(self.tr("Company Name"), self.inpCompanyName)
         self.layLeftPane.addRow(self.tr("Date"), self.inpDate)
         self.layLeftPane.addRow(self.btnStoreDoc)
+        self.layLeftPane.addRow(self.lblOcrProgress)
 
     def loadDoc(self):
         defaultDir = self.config.getKey('default_import_dir', None)
@@ -101,15 +108,22 @@ class mainWidget(QWidget):
     def ocrDoc(self, filepath):
         try:
             self.btnLoadDoc.setEnabled(False)
+            self.btnStoreDoc.setEnabled(False)
             self.fileToOcr.emit(filepath)
             self.wdgViewer.setFile(filepath)
+            self.lblOcrProgress.setStyleSheet(self.styleLblOCRrunning)
+            self.lblOcrProgress.setText(self.tr("OCR running"))
+            self.ocrFileName = None
         except:
             print("Error during ocr")
             print(sys.exc_info())
 
     def ocrFinished(self, newFilename):
         self.btnLoadDoc.setEnabled(True)
-        print(newFilename)
+        self.btnStoreDoc.setEnabled(True)
+        self.lblOcrProgress.setStyleSheet(self.styleLblOCRfinished)
+        self.lblOcrProgress.setText(self.tr("OCR finished"))
+        self.ocrFileName = newFilename
 
     def storeDoc(self):
         pass
