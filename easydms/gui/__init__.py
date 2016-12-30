@@ -130,14 +130,24 @@ class mainWidget(QWidget):
         self.wdgViewer.setFile(self.ocrFileName)
 
     def storeDoc(self):
-        self.btnStoreDoc.setEnabled(False)
         if not self.ocrFileName:
-            pass
+            QMessageBox.warning(
+                self, "easydms", self.tr(
+                    "No file was prcessed"
+                )
+            )
+            return
         compName = self.inpCompanyName.text()
         if self.dmsDirectory == "":
-            pass
+            raise Exception("dmsDirectory was not set")
         if compName == "":
-            pass
+            QMessageBox.warning(
+                self, "easydms", self.tr(
+                    "Company name is empty"
+                )
+            )
+            return
+        self.btnStoreDoc.setEnabled(False)
         date = self.inpDate.date()
         year = date.year()
         month = date.month()
