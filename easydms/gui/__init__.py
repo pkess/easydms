@@ -179,6 +179,7 @@ class mainWidget(QWidget):
         shutil.copyfile(self.ocrFileName, newFileName)
         os.remove(self.ocrFileName)
         os.remove(self.origFilePath)
+        self.wdgViewer.setFile("")
         self.ocrFileName = ""
         self.origFilePath = ""
         self.determineCompanyAutoCompletion()

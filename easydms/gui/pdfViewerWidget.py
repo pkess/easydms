@@ -56,7 +56,10 @@ class pdfViewerWidget(QWidget):
 
     def setFile(self, filePath):
         self.filePath = filePath
-        self.btnOpenPdf.setEnabled(True)
+        if(self.filePath != ""):
+            self.btnOpenPdf.setEnabled(True)
+        else:
+            self.btnOpenPdf.setEnabled(False)
 
     def openFileExternal(self):
         pdfViewer = self.config.getKey('pdfViewer', None)
