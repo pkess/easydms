@@ -34,12 +34,14 @@ from PyQt5.QtCore import (
     QDir,
     QThread,
     QObject, pyqtSignal, pyqtSlot,
+    QStringListModel,
 )
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QMessageBox,
     QFormLayout, QHBoxLayout, QPushButton,
     QLineEdit, QDateEdit, QFileDialog,
     QLabel,
+    QCompleter,
 )
 from .pdfViewerWidget import pdfViewerWidget
 from .. import ocrmypdfwrapper
@@ -79,6 +81,10 @@ class mainWidget(QWidget):
         self.btnLoadDoc = QPushButton(self.tr("Load document"))
         self.btnLoadDoc.clicked.connect(self.loadDoc)
         self.inpCompanyName = QLineEdit()
+        self.compNames = QStringListModel()
+        self.inpCompanyNameCompleter = QCompleter(self.compNames, self)
+        self.inpCompanyNameCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+        self.inpCompanyName.setCompleter(self.inpCompanyNameCompleter)
         self.inpDate = QDateEdit()
         self.inpDate.setDate(QDate.currentDate())
         self.btnStoreDoc = QPushButton(self.tr("Store document"))
@@ -175,9 +181,22 @@ class mainWidget(QWidget):
         os.remove(self.origFilePath)
         self.ocrFileName = ""
         self.origFilePath = ""
+        self.determineCompanyAutoCompletion()
 
     def setDmsDirectory(self, path):
         self.dmsDirectory = path
+        self.determineCompanyAutoCompletion()
+
+    @pyqtSlot()
+    def determineCompanyAutoCompletion(self):
+        compNames = set()
+        dirs = os.listdir(self.dmsDirectory)
+        for d in dirs:
+            paths = os.path.join(self.dmsDirectory, d)
+            names = os.listdir(paths)
+            for n in names:
+                compNames.add(n)
+        self.compNames.setStringList(compNames)
 
 
 class ocrWorker(QObject):
