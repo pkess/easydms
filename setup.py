@@ -47,14 +47,10 @@ setup(
 
     packages=[
         'easydms',
-        'easydms.cli',
         'easydms.gui',
     ],
 
     entry_points={
-        'console_scripts': [
-            'easydms = easydms.cli:main',
-        ],
         'gui_scripts': [
             'easydms_gui = easydms.gui:main',
         ],
@@ -62,6 +58,8 @@ setup(
 
     install_requires=[
         'pyyaml',
+        'PyQt5',
+#        'ocrmypdf',
     ],
 
     classifiers=[

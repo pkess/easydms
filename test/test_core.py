@@ -26,7 +26,7 @@
 
 """Test core funtionalities."""
 
-from _common import testDataPath, TestCase, TestCaseCommandline
+from _common import testDataPath, TestCase
 import unittest
 import tempfile
 import os
@@ -34,7 +34,6 @@ import sys
 import shutil
 
 import easydms.config
-import easydms.cli
 
 
 class TestConfig(TestCase):
@@ -60,6 +59,7 @@ class TestConfig(TestCase):
     def _create_dmsdir(self):
         os.makedirs(self.dmsdir)
 
+    @unittest.skip("No CLI in this branch")
     def test_nonexisting_config(self):
         """Check behaviour of not existing configuration file"""
         try:
@@ -81,7 +81,7 @@ class TestConfig(TestCase):
         config = easydms.config.Config()
         print(config)
 
-    @unittest.expectedFailure
+    @unittest.skip("No CLI in this branch")
     def test_dump_config_main(self):
         """Check dump of config from main with argparse"""
         self.io.stdout.clear()
@@ -132,6 +132,7 @@ class TestConfig(TestCase):
         finally:
             os.remove(tempconfig.name)
 
+    @unittest.skip("No CLI in this branch")
     def test_create_dir(self):
         self._create_config()
         with self.assertRaises(SystemExit):
@@ -147,6 +148,7 @@ class TestConfig(TestCase):
         easydms.cli.main()
         self.assertExists(os.path.expanduser(self.dmsdir))
 
+    @unittest.skip("No DB in this Branch")
     def test_add(self):
         """Test add of document to db"""
         self._create_db()
@@ -168,25 +170,3 @@ class TestConfig(TestCase):
         self.io.addinput('')
         self.io.addinput('')
         easydms.cli.main()
-
-
-class TestConfigCmd(TestCaseCommandline):
-    def setUp(self):
-        super(TestConfigCmd, self).setUp()
-        self.createConfigDir()
-
-    def test_nonexisting_config_cmd(self):
-        """Check behaviour of not existing configuration file"""
-        try:
-            tempdir = tempfile.mkdtemp()
-            filename = os.path.join(tempdir, "Config.yaml")
-            ret = self.call("easydms", ["-c {0}".format(filename)])
-            self.assertNotEqual(ret, 0)
-        finally:
-            shutil.rmtree(tempdir)
-
-    @unittest.expectedFailure
-    def test_dump_config_cmd(self):
-        """Check dump of config by commandline invoke"""
-        ret = self.call("easydms", ["config", "dump"])
-        self.assertEqual(ret, 0)
